@@ -109,6 +109,9 @@
     <br />
     <div id="payment-info" class="box-element hidden">
       <small>PayPal Option</small>
+      <button id="make-payment" class="btn btn-outline-dark">
+        Make Payment
+      </button>
     </div>
   </div>
 </div>
@@ -119,6 +122,16 @@
     document.getElementById("shipping-info").innerHTML = "";
   }
 
+  if (user != "AnonymousUser") {
+    document.getElementById("user-info").innerHTML = "";
+  }
+
+  if (shipping == "False" && user != "AnonymousUser") {
+    //Hide Entire Form If User IS Logged In Or Shipping Id False
+    document.getElementById("form-wrapper").classList.add("hidden");
+    //show payment button so user can buy item if its logged in and shippment is not required
+    document.getElementById("payment-info").classList.remove("hidden");
+  }
   //Showing Paument Option
   var form = document.getElementById("form");
   form.addEventListener("submit", (e) => {
@@ -129,6 +142,14 @@
     //SHowing Payment Info
     document.getElementById("payment-info").classList.remove("hidden");
   });
+
+  //Functionality For To Add On Payment Button
+  const submitFormData = (e) => {
+    console.log("Hello There Form Is Submitted");
+  };
+  document
+    .getElementById("make-payment")
+    .addEventListener("click", submitFormData);
 </script>
 
 {% endblock content %}
