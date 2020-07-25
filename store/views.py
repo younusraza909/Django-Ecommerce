@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .models import *
 from django.http import JsonResponse
 import json
+import datetime
 
 # Create your views here.
 
@@ -80,3 +81,32 @@ def update_item(request):
         orderItem.delete()
 
     return JsonResponse("Item Was Added", safe=False)
+
+
+def processOrder(request):
+    transaction_id = datetime.datetime.now().timestamp()
+    data = json.loads(request.body)
+    if (request.user.is_authenticated):
+        coustomer = request.user.coustomer
+        order, created = Order.objects.get_or_create(
+            coustomer=coustomer, complete=False)
+        total = float(data["form"]['total'])
+        order.transaction_id = transaction_id
+
+        if total == float(order.get_cart_total):
+            order.complete = True
+        order.save()
+
+        if order.shipping == True:
+            ShippingModel.objects.create(
+                coustomer=coustomer,
+                order=order,
+                address=data["shipping"]["address"],
+                city=data["shipping"]["city"],
+                states=data["shipping"]["state"],
+                zipcode=data["shipping"]["zipcode"]
+            )
+            print("Model Created For Shippment")
+    else:
+        print("User Not Logged In")
+    return JsonResponse("payment Submitted", safe=False)
