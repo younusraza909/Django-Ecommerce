@@ -118,6 +118,8 @@
 <script>
   //Dynamically showing form
   var shipping = "{{order.shipping}}";
+  var total = "{{order.get_cart_total|floatformat:2}}";
+
   if (shipping == "False") {
     document.getElementById("shipping-info").innerHTML = "";
   }
@@ -146,6 +148,29 @@
   //Functionality For To Add On Payment Button
   const submitFormData = (e) => {
     console.log("Hello There Form Is Submitted");
+
+    var userFormData = {
+      name: null,
+      email: null,
+      total: total,
+    };
+    var shippingData = {
+      address: null,
+      city: null,
+      state: null,
+      zipcode: null,
+    };
+
+    if (shipping != "False") {
+      shippingData.address = form.address.value;
+      shippingData.city = form.city.value;
+      shippingData.zipcode = form.zipcode.value;
+      shippingData.state = form.state.value;
+    }
+    if (user == "AnonymousUser") {
+      userFormData.name = form.user.value;
+      userFormData.email = form.email.value;
+    }
   };
   document
     .getElementById("make-payment")
