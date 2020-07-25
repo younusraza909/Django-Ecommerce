@@ -10,10 +10,10 @@
       <table class="table">
         <tr>
           <td>
-            <h5>items: <strong>3</strong></h5>
+            <h5>items: <strong>{{order.get_cart_items}}</strong></h5>
           </td>
           <td>
-            <h5>total: <strong>$43</strong></h5>
+            <h5>total: <strong>${{order.get_cart_total}}</strong></h5>
           </td>
           <td>
             <a
@@ -57,7 +57,7 @@
             />
           </div>
         </div>
-        <div style="flex: 1;">$ 40</div>
+        <div style="flex: 1;">$ {{item.get_total}}</div>
       </div>
       {% endfor %}
     </div>
