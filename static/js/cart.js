@@ -10,7 +10,27 @@ updateBtns.forEach((btn) => {
     if (user === "AnonymousUser") {
       console.log("User Is Not Authenticated");
     } else {
-      console.log("User Is Authenticated...Sending Data");
+      updateUserOrder(productId, action);
     }
   });
 });
+
+const updateUserOrder = (productId, action) => {
+  console.log("User IS Authenticated ....Sending Data");
+
+  //We are sending data from frontend to backend
+  var url = "/update_item/";
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ productId: productId, action: action }),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Data:", data);
+    });
+};
