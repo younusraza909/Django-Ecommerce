@@ -112,5 +112,23 @@
     </div>
   </div>
 </div>
+<script>
+  //Dynamically showing form
+  var shipping = "{{order.shipping}}";
+  if (shipping == "False") {
+    document.getElementById("shipping-info").innerHTML = "";
+  }
+
+  //Showing Paument Option
+  var form = document.getElementById("form");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    console.log("Form Submitted");
+    //Hidding Form Submit Button
+    document.getElementById("form-button").classList.add("hidden");
+    //SHowing Payment Info
+    document.getElementById("payment-info").classList.remove("hidden");
+  });
+</script>
 
 {% endblock content %}
