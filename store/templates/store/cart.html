@@ -13,7 +13,9 @@
             <h5>items: <strong>{{order.get_cart_items}}</strong></h5>
           </td>
           <td>
-            <h5>total: <strong>${{order.get_cart_total}}</strong></h5>
+            <h5>
+              total: <strong>${{order.get_cart_total|floatformat:2}}</strong>
+            </h5>
           </td>
           <td>
             <a
