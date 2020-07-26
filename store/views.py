@@ -3,6 +3,8 @@ from .models import *
 from django.http import JsonResponse
 import json
 import datetime
+# this decorator tells django that we dont need csrf token to send data to this view
+# from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
@@ -81,6 +83,9 @@ def update_item(request):
         orderItem.delete()
 
     return JsonResponse("Item Was Added", safe=False)
+
+# this decorator tells django that we dont need csrf token to send data to this view
+# @csrf_exempt
 
 
 def processOrder(request):

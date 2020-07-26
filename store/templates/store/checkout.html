@@ -3,6 +3,7 @@
   <div class="col-lg-6">
     <div class="box-element" id="form-wrapper">
       <form id="form">
+        {% csrf_token %}
         <div id="user-info">
           <div class="form-field">
             <input
@@ -136,6 +137,10 @@
   }
   //Showing Paument Option
   var form = document.getElementById("form");
+  //if for some reason csrf_token not get generated from ajax main.html we can get that form csrf token for that
+  var csrftoken = form.getElementsByTagName("input")[0].value;
+  //so we overwrite main.html csrf token in case if its not generated ot generated
+
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     console.log("Form Submitted");
