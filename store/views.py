@@ -3,7 +3,7 @@ from .models import *
 from django.http import JsonResponse
 import json
 import datetime
-from .utils import cookieCart
+from .utils import cookieCart, cartData
 # this decorator tells django that we dont need csrf token to send data to this view
 # from django.views.decorators.csrf import csrf_exempt
 
@@ -11,51 +11,32 @@ from .utils import cookieCart
 
 
 def store(request):
-    if request.user.is_authenticated:
-        coustomer = request.user.coustomer
-        order, created = Order.objects.get_or_create(
-            coustomer=coustomer, complete=False)
-        # will get all order item attatch to that order
-        items = order.orderitem_set.all()
-        cartItems = order.get_cart_items
-    else:
-        cookieData = cookieCart(request)
-        cartItems = cookieData['cartItems']
+    data = cartData(request)
+    cartItems = data["cartItems"]
+
     products = Product.objects.all()
-    context = {"products": products, "cartItems": cartItems, "shipping": False}
+    context = {"products": products,
+               "cartItems": cartItems, "shipping": False}
     return render(request, "store/store.html", context)
 
 
 def cart(request):
-    if request.user.is_authenticated:
-        coustomer = request.user.coustomer
-        order, created = Order.objects.get_or_create(
-            coustomer=coustomer, complete=False)
-        # will get all order item attatch to that order
-        items = order.orderitem_set.all()
-        cartItems = order.get_cart_items
-    else:
-        cookieData = cookieCart(request)
-        cartItems = cookieData['cartItems']
-        items = cookieData['items']
-        order = cookieData['order']
+    data = cartData(request)
+    cartItems = data["cartItems"]
+    items = data["items"]
+    order = data["order"]
+
     context = {"items": items, "order": order,
                "cartItems": cartItems, "shipping": False}
     return render(request, "store/cart.html", context)
 
 
 def checkout(request):
-    if request.user.is_authenticated:
-        coustomer = request.user.coustomer
-        order, created = Order.objects.get_or_create(
-            coustomer=coustomer, complete=False)
-        items = order.orderitem_set.all()
-        cartItems = order.get_cart_items
-    else:
-        cookieData = cookieCart(request)
-        cartItems = cookieData['cartItems']
-        items = cookieData['items']
-        order = cookieData['order']
+    data = cartData(request)
+    cartItems = data["cartItems"]
+    items = data["items"]
+    order = data["order"]
+
     context = {"items": items, "order": order, "cartItems": cartItems}
     return render(request, "store/checkout.html", context)
 
