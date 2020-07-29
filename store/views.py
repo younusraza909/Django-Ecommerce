@@ -3,7 +3,7 @@ from .models import *
 from django.http import JsonResponse
 import json
 import datetime
-from .utils import cookieCart, cartData
+from .utils import cookieCart, cartData, guestOrder
 # this decorator tells django that we dont need csrf token to send data to this view
 # from django.views.decorators.csrf import csrf_exempt
 
@@ -80,34 +80,7 @@ def processOrder(request):
             coustomer=coustomer, complete=False)
 
     else:
-        print("COOKIES", request.COOKIES)
-        name = data['form']['name']
-        email = data['form']['email']
-
-        cookieData = cookieCart(request)
-        items = cookieData['items']
-
-        coustomer, created = Coustomer.objects.get_or_create(
-            email=email
-        )
-
-        coustomer.name = name
-        coustomer.save()
-
-        order = order.objects.create(
-            coustomer=coustomer,
-            complete=False
-        )
-
-        for item in items:
-            product = Product.objects.get(id=item['product']['id'])
-
-            orderItem = OrderItem.objects.create(
-                product=product,
-                order=order,
-                quantity=item['quantity']
-            )
-
+        coustomer, order = guestOrder(request, data)
     total = float(data["form"]['total'])
     order.transaction_id = transaction_id
     if total == float(order.get_cart_total):
