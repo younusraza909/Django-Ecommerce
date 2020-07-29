@@ -78,23 +78,51 @@ def processOrder(request):
         coustomer = request.user.coustomer
         order, created = Order.objects.get_or_create(
             coustomer=coustomer, complete=False)
-        total = float(data["form"]['total'])
-        order.transaction_id = transaction_id
 
-        if total == float(order.get_cart_total):
-            order.complete = True
+    else:
+        print("COOKIES", request.COOKIES)
+        name = data['form']['name']
+        email = data['form']['email']
+
+        cookieData = cookieCart(request)
+        items = cookieData['items']
+
+        coustomer, created = Coustomer.objects.get_or_create(
+            email=email
+        )
+
+        coustomer.name = name
+        coustomer.save()
+
+        order = order.objects.create(
+            coustomer=coustomer,
+            complete=False
+        )
+
+        for item in items:
+            product = Product.objects.get(id=item['product']['id'])
+
+            orderItem = OrderItem.objects.create(
+                product=product,
+                order=order,
+                quantity=item['quantity']
+            )
+
+    total = float(data["form"]['total'])
+    order.transaction_id = transaction_id
+    if total == float(order.get_cart_total):
+        order.complete = True
         order.save()
 
-        if order.shipping == True:
-            ShippingModel.objects.create(
-                coustomer=coustomer,
-                order=order,
-                address=data["shipping"]["address"],
-                city=data["shipping"]["city"],
-                states=data["shipping"]["state"],
-                zipcode=data["shipping"]["zipcode"]
-            )
-            print("Model Created For Shippment")
-    else:
-        print("User Not Logged In")
+    if order.shipping == True:
+        ShippingModel.objects.create(
+            coustomer=coustomer,
+            order=order,
+            address=data["shipping"]["address"],
+            city=data["shipping"]["city"],
+            states=data["shipping"]["state"],
+            zipcode=data["shipping"]["zipcode"]
+        )
+        print("Model Created For Shippment")
+
     return JsonResponse("payment Submitted", safe=False)
